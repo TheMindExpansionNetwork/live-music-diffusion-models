@@ -1,0 +1,13 @@
+{
+    "dataset_type": "pre_encoded",
+    "datasets": [
+        {
+            "id": "jamendo",
+            "path": "/path/to/jamendo/",
+            "custom_metadata_module": "/path/to/stable-audio-tools/stable_audio_tools/configs/dataset_configs/custom_metadata/custom_md_jamendo.py",
+            "latent_extension": "npy"
+        }
+    ],
+    "random_crop": false,
+    "latent_crop_length": 256
+}

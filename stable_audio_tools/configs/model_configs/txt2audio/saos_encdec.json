@@ -1,0 +1,136 @@
+{
+    "model_type": "diffusion_cond",
+    "sample_size": 491520,
+    "sample_rate": 44100,
+    "audio_channels": 2,
+    "model": {
+        "pretransform": {
+            "type": "autoencoder",
+            "iterate_batch": true,
+            "config": {
+                "encoder": {
+                    "type": "oobleck",
+                    "requires_grad": false,
+                    "config": {
+                        "in_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 128,
+                        "use_snake": true
+                    }
+                },
+                "decoder": {
+                    "type": "oobleck",
+                    "config": {
+                        "out_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 64,
+                        "use_snake": true,
+                        "final_tanh": false
+                    }
+                },
+                "bottleneck": {
+                    "type": "vae"
+                },
+                "latent_dim": 64,
+                "downsampling_ratio": 2048,
+                "io_channels": 2
+            }
+        },
+        "conditioning": {
+            "configs": [
+                {
+                    "id": "prompt",
+                    "type": "t5",
+                    "config": {
+                        "t5_model_name": "t5-base",
+                        "max_length": 64
+                    }
+                },
+                {
+                    "id": "seconds_total",
+                    "type": "number",
+                    "config": {
+                        "min_val": 0,
+                        "max_val": 256
+                    }
+                }
+            ],
+            "cond_dim": 768
+        },
+        "diffusion": {
+            "cross_attention_cond_ids": ["prompt", "seconds_total"],
+            "global_cond_ids": ["seconds_total"],
+            "input_add_ids": [["inpaint_mask", 1], ["inpaint_masked_input", 64]],
+            "diffusion_objective": "rectified_flow",
+            "type": "dit",
+            "distribution_shift_options": {
+                "min_length": 256,
+                "max_length": 4096
+            },
+            "config": {
+                "io_channels": 64,
+                "embed_dim": 1024,
+                "depth": 16,
+                "num_heads": 8,
+                "cond_token_dim": 768,
+                "global_cond_dim": 768,
+                "postpend": true,
+                "input_add_dims": [["inpaint_mask", 1], ["inpaint_masked_input", 64]],
+                "transformer_type": "continuous_transformer",
+                "attn_kwargs": {
+                    "qk_norm": "ln"
+                }
+            }
+        },
+        "io_channels": 64
+    },
+    "training": {
+        "use_ema": false,
+        "log_loss_info": false,
+        "pre_encoded": true,
+        "context_router": true,
+        "inpainting": {
+            "mask_kwargs": {
+                "max_mask_segments": 1,
+                "mask_type_probabilities": [0, 0, 1.0],
+                "fixed_mask_size": 192,
+                "context_router_attention_pattern": "enc-dec",
+                "use_context_shift": false,
+                "outpainting_dropout_probs":
+                    {
+                        "p_uncond": 0.2,
+                        "p_partial": 0.3
+                    }
+            }
+        },
+        "optimizer_configs": {
+            "diffusion": {
+                "optimizer": {
+                    "type": "AdamW",
+                    "config": {
+                        "lr": 5e-5,
+                        "betas": [0.9, 0.999],
+                        "weight_decay": 0
+                    }
+                }
+            }
+        },
+        "demo": {
+            "demo_every": 2000,
+            "demo_steps": 50,
+            "num_demos": 4,
+            "demo_cond_from_batch": true,
+            "demo_cond": [
+                {"prompt": "The chill track's mood is set by the gentle strumming of a clean sounding electric guitar, which has a slight delay effect added to it.", "seconds_total": 12, "seconds_start": 0},
+                {"prompt": "The music piece is an instrumental with a prominent guitar sound, belonging to the genres blues and classicrock, and has a mood that is cool. It follows a 4/4 time signature and features a tempo of 120.0 bpm.", "seconds_total": 12, "seconds_start": 0},
+                {"prompt": "This music is upbeat chiptune electronic music, perfect for a platformer video game level. It has a fast tempo and energetic rhythm, with catchy melodies and a fun, playful mood.", "seconds_total": 12, "seconds_start": 0},
+                {"prompt": "This sounds like a classical orchestral music piece, featuring a grand and majestic arrangement with a full orchestra. The mood is uplifting and inspiring, with a sense of adventure and heroism.", "seconds_total": 12, "seconds_start": 0}
+            ],
+            "demo_cfg_scales": [4, 7]
+        }
+    }
+}

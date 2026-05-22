@@ -1,0 +1,13 @@
+{
+    "dataset_type": "pre_encoded",
+    "datasets": [
+        {
+            "id": "slakh",
+            "path": "/path/to/slakh/",
+            "custom_metadata_module": "/path/to/stable-audio-tools/stable_audio_tools/configs/dataset_configs/custom_metadata/custom_md_slakh.py",
+            "latent_extension": "npy"
+        }
+    ],
+    "random_crop": true,
+    "latent_crop_length": 255
+}

@@ -1,0 +1,144 @@
+{
+    "model_type": "diffusion_cond",
+    "sample_size": 1572864,
+    "sample_rate": 44100,
+    "audio_channels": 2,
+    "model": {
+        "pretransform": {
+            "type": "autoencoder",
+            "iterate_batch": false,
+            "model_half": true,
+            "config": {
+                "encoder": {
+                    "type": "oobleck",
+                    "requires_grad": false,
+                    "config": {
+                        "in_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 128,
+                        "use_snake": true
+                    }
+                },
+                "decoder": {
+                    "type": "oobleck",
+                    "config": {
+                        "out_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 64,
+                        "use_snake": true,
+                        "final_tanh": false
+                    }
+                },
+                "bottleneck": {
+                    "type": "vae"
+                },
+                "latent_dim": 64,
+                "downsampling_ratio": 2048,
+                "io_channels": 2
+            }
+        },
+        "conditioning": {
+            "configs": [
+                {
+                    "id": "prompt",
+                    "type": "t5",
+                    "config": {
+                        "t5_model_name": "t5-base",
+                        "max_length": 64
+                    }
+                },
+                {
+                    "id": "seconds_total",
+                    "type": "number",
+                    "config": {
+                        "min_val": 0,
+                        "max_val": 256
+                    }
+                }
+            ],
+            "cond_dim": 768
+        },
+        "diffusion": {
+            "cross_attention_cond_ids": ["prompt", "seconds_total"],
+            "global_cond_ids": ["seconds_total"],
+            "input_add_ids": [["accomp_mask", 1], ["accomp_input", 64]],
+            "diffusion_objective": "rectified_flow",
+            "distribution_shift_options": {
+                "min_length": 256,
+                "max_length": 4096
+            },
+            "type": "dit",
+            "config": {
+                "io_channels": 64,
+                "embed_dim": 1024,
+                "depth": 16,
+                "num_heads": 8,
+                "cond_token_dim": 768,
+                "global_cond_dim": 768,
+                "input_add_dims": [["accomp_mask", 1], ["accomp_input", 64]],
+                "transformer_type": "continuous_transformer",
+                "attn_kwargs": {
+                    "qk_norm": "ln"
+                }
+            }
+        },
+        "io_channels": 64
+    },
+    "training": {
+        "use_ema": false,
+        "log_loss_info": false,
+        "pre_encoded": true,
+        "timestep_sampler": "trunc_logit_normal",
+        "accomp_kwargs": {
+                "cutoff": 768,
+                "p_uncond": 0.1,
+                "p_partial": 0.0
+        },
+        "optimizer_configs": {
+            "diffusion": {
+                "optimizer": {
+                    "type": "AdamW",
+                    "config": {
+                        "lr": 2e-4,
+                        "betas": [0.9, 0.95],
+                        "eps": 1e-8,
+                        "weight_decay": 0.01,
+                        "foreach": true
+                    }
+                },
+                "scheduler": {
+                    "type": "InverseLR",
+                    "config": {
+                        "inv_gamma": 1000000,
+                        "power": 0.5,
+                        "warmup": 0.995
+                    }
+                }
+            }
+        },
+        "demo": {
+            "demo_every": 2000,
+            "demo_steps": 50,
+            "num_demos": 4,
+            "demo_cond_from_batch": true,
+            "demo_cond": [
+                {"prompt": "ctronic music that has a constant melody throughout with accompanying instruments used to supplement the melody which can be heard in possibly a casual setting", "seconds_total": 36},
+                {"prompt": "This rock song has an indie rock genre but with a dancing joyful vibe to it and licks / effects using synths along with whistle at the end", "seconds_total": 36},
+                {"prompt": "Synthetic orchestral piece in the style of a 90s war movie battle scene soundtrack, with prominent bass drums and dry brass section harmonies", "seconds_total": 36},
+                {"prompt": "Instrumental ambient electronic song. The drum machine beat blends with a sparse piano lead motif. The track is made full by strings and later by a violin lead. The track has an emotional progression and feeling.", "seconds_total": 36}
+            ],
+            "demo_cfg_scales": [1, 4, 7],
+            "cond_display_configs": [
+                {
+                    "id": "accomp_input",
+                    "type": "audio",
+                    "config": {"pre_encoded": true, "display_mix": true}
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,212 @@
+{
+    "model_type": "diffusion_cond",
+    "sample_size": 491520,
+    "sample_rate": 44100,
+    "audio_channels": 2,
+    "model": {
+        "pretransform": {
+            "type": "autoencoder",
+            "iterate_batch": true,
+            "config": {
+                "encoder": {
+                    "type": "oobleck",
+                    "requires_grad": false,
+                    "config": {
+                        "in_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 128,
+                        "use_snake": true
+                    }
+                },
+                "decoder": {
+                    "type": "oobleck",
+                    "config": {
+                        "out_channels": 2,
+                        "channels": 128,
+                        "c_mults": [1, 2, 4, 8, 16],
+                        "strides": [2, 4, 4, 8, 8],
+                        "latent_dim": 64,
+                        "use_snake": true,
+                        "final_tanh": false
+                    }
+                },
+                "bottleneck": {
+                    "type": "vae"
+                },
+                "latent_dim": 64,
+                "downsampling_ratio": 2048,
+                "io_channels": 2
+            }
+        },
+        "conditioning": {
+            "configs": [
+                {
+                    "id": "prompt",
+                    "type": "t5",
+                    "config": {
+                        "t5_model_name": "t5-base",
+                        "max_length": 64
+                    }
+                },
+                {
+                    "id": "seconds_total",
+                    "type": "number",
+                    "config": {
+                        "min_val": 0,
+                        "max_val": 256
+                    }
+                }
+            ],
+            "cond_dim": 768
+        },
+        "diffusion": {
+            "cross_attention_cond_ids": ["prompt", "seconds_total"],
+            "global_cond_ids": ["seconds_total"],
+            "input_add_ids": [["inpaint_mask", 1], ["inpaint_masked_input", 64], ["accomp_mask", 1], ["accomp_input", 64]],
+            "diffusion_objective": "rf_denoiser",
+            "type": "dit",
+            "distribution_shift_options": {
+                "min_length": 256,
+                "max_length": 4096
+            },
+            "config": {
+                "io_channels": 64,
+                "embed_dim": 1024,
+                "depth": 16,
+                "num_heads": 8,
+                "cond_token_dim": 768,
+                "global_cond_dim": 768,
+                "postpend": true,
+                "input_add_dims": [["inpaint_mask", 1], ["inpaint_masked_input", 64], ["accomp_mask", 1], ["accomp_input", 64]],
+                "transformer_type": "continuous_transformer",
+                "attn_kwargs": {
+                    "qk_norm": "ln"
+                }
+            }
+        },
+        "io_channels": 64
+    },
+    "training": {
+        "use_ema": false,
+        "pre_encoded": true,
+        "log_loss_info": false,
+        "context_router": true,
+        "clip_grad_norm": 1.0,
+        "cfg_dropout_prob": 0.0,
+        "accomp_kwargs": {
+            "cutoff": 144,
+            "p_uncond": 0.01,
+            "p_partial": 0.01
+        },
+        "inpainting": {
+            "mask_kwargs": {
+                "max_mask_segments": 1,
+                "mask_type_probabilities": [0, 0, 1.0],
+                "fixed_mask_size": 192,
+                "context_router_attention_pattern": "block-causal",
+                "block_causal_chunk_size": 48,
+                "block_causal_window_chunks": 4,
+                "use_context_shift": false,
+                "outpainting_dropout_probs": {
+                    "p_uncond": 0.2,
+                    "p_partial": 0.3
+                }
+            }
+        },
+        "arc": {
+            "self_forcing": {
+                "max_sampling_steps": 6,
+                "n_rollout_chunks": 12,
+                "use_context_shift": false,
+                "gradient_accumulation_steps": 3,
+                "chunk_size": 48,
+                "context_size": 192,
+                "use_kv_cache": true,
+                "rope_mode": "fixed",
+                "outpainting_dropout_probs": {
+                    "p_uncond": 0.3,
+                    "p_partial": 0.1
+                }
+            },
+            "ode_warmup": {
+                "warmup_steps": 0,
+                "refresh_rate": 50,
+                "sampling_steps": 50,
+                "cfg": 7.0
+            },
+            "noise_dist": {
+                "generator": "logsnr_uniform",
+                "discriminator": "trunc_logit_normal"
+            },
+            "use_model_as_discriminator": false,
+            "discriminator_base_ckpt": "/path/to/base_model.ckpt",
+            "discriminator_base_model": "/path/to/streamgen_base.json",
+            "discriminator": {
+                "type": "convnext",
+                "dit_hidden_layer": 8,
+                "weights": {
+                    "generator": 1.0,
+                    "discriminator": 1.0
+                },
+                "loss_type": "relativistic",
+                "config": {
+                    "channels": 128,
+                    "strides": [1, 2, 2],
+                    "c_mults": [1, 2, 4],
+                    "num_blocks": [2, 2, 2],
+                    "loss_type": "relativistic"
+                },
+                "contrastive": true,
+                "include_grad_penalties": false
+            }
+        },
+        "optimizer_configs": {
+            "diffusion": {
+                "optimizer": {
+                    "type": "AdamW",
+                    "config": {
+                        "lr": 2e-6,
+                        "betas": [0.9, 0.99],
+                        "eps": 1e-8,
+                        "weight_decay": 0.01,
+                        "foreach": true
+                    }
+                }
+            },
+            "discriminator": {
+                "optimizer": {
+                    "type": "AdamW",
+                    "config": {
+                        "lr": 1e-6,
+                        "betas": [0.9, 0.95],
+                        "eps": 1e-8,
+                        "weight_decay": 0.01,
+                        "foreach": true
+                    }
+                }
+            }
+        },
+        "demo": {
+            "demo_every": 500,
+            "demo_steps": 6,
+            "num_demos": 4,
+            "demo_cond_from_batch": true,
+            "demo_cond": [
+                {"prompt": "drum breaks 174 BPM", "seconds_total": 12},
+                {"prompt": "A short, beautiful piano riff in C minor", "seconds_total": 12},
+                {"prompt": "Synth pluck arp with reverb and delay, 128 BPM", "seconds_total": 12},
+                {"prompt": "Birds singing in the forest", "seconds_total": 12}
+            ],
+            "demo_cfg_scales": [1],
+            "cond_display_configs": [
+                {
+                    "id": "accomp_input",
+                    "type": "audio",
+                    "config": {"pre_encoded": true, "display_mix": true}
+                }
+            ]
+        }
+    }
+}
