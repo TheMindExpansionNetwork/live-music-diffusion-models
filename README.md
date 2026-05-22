@@ -1,6 +1,8 @@
 # Live Music Diffusion Models
 
-Training and inference code for streaming, autoregressive music diffusion models. Models
+[**Demo Page**](https://stephenbrade.github.io/lmdm-public/) | [**Paper**](https://arxiv.org/abs/2605.22717)
+
+Training and inference code for Live Music Diffusion Models (LMDMs): streaming, autoregressive music diffusion models. Models
 generate audio block-by-block over a sliding context window, supporting live generation. Huge shout-out to the [Stable Audio](https://github.com/Stability-AI/stable-audio-tools) folks, where this codebase draws heavy inspiration from.
 
 This is our public facing code repo. For access to development code used during the project, please reach out to znovack@ucsd.edu or brade@mit.edu.
@@ -63,3 +65,20 @@ function, and decoding) is in [notebooks/inference.ipynb](notebooks/inference.ip
 - [ ] More detailed accompaniment training support
 - [ ] ONNX export pipeline
 - [ ] Interface setup
+
+## Citation
+
+If you use this repo, please cite us at:
+
+```bibtext
+@article{novack2026lmdm,
+  title         = {Live Music Diffusion Models: Efficient Fine-Tuning and Post-Training of Interactive Diffusion Music Generators},
+  author        = {Novack, Zachary and Brade, Stephen and Kim, Haven and Flores Garc{\'i}a, Hugo and Shikarpur, Nithya and Talegaonkar, Chinmay and Kim, Suwan and Chen, Valerie K. and McAuley, Julian and Berg-Kirkpatrick, Taylor and Huang, Cheng-Zhi Anna},
+  journal       = {arXiv preprint arXiv:2605.22717},
+  year          = {2026},
+  archivePrefix = {arXiv},
+  eprint        = {2605.22717},
+  primaryClass  = {cs.SD},
+  url           = {https://arxiv.org/abs/2605.22717}
+}
+```
