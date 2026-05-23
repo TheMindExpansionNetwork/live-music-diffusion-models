@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "app": "sonic-forage-lmdm-smoke",
+  "repo_url": "https://github.com/TheMindExpansionNetwork/live-music-diffusion-models.git",
+  "upstream_url": "https://github.com/ZacharyNovack/live-music-diffusion-models.git",
+  "smoke_type": "non-generative clone/compile/config/inference-symbol smoke",
+  "steps": [
+    {
+      "cmd": "git clone --depth 1 https://github.com/TheMindExpansionNetwork/live-music-diffusion-models.git /tmp/live-music-diffusion-models",
+      "cwd": null,
+      "exit_code": 0,
+      "seconds": 0.339,
+      "output_tail": "Cloning into '/tmp/live-music-diffusion-models'...\n"
+    },
+    {
+      "cmd": "git log -1 --format='%H%n%ci%n%s'",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "exit_code": 0,
+      "seconds": 0.007,
+      "output_tail": "a69f5d46a3a8891e660b6f8ab7fb67a151b290de\n2026-05-23 14:21:58 +0000\nfeat: add Modal Stable Audio full generation proof\n"
+    },
+    {
+      "cmd": "python -m py_compile train.py pre_encode.py run_gradio.py stable_audio_tools/inference/generation.py",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "exit_code": 0,
+      "seconds": 0.087,
+      "output_tail": ""
+    },
+    {
+      "cmd": "python - <<'PY'\nimport json, pathlib\nbase = pathlib.Path('stable_audio_tools/configs/model_configs/txt2audio')\nconfigs = sorted(p.name for p in base.glob('*.json'))\nfor p in base.glob('*.json'):\n    json.load(open(p))\nprint(json.dumps({'config_count': len(configs), 'configs': configs}, indent=2))\nPY",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "exit_code": 0,
+      "seconds": 0.052,
+      "output_tail": "{\n  \"config_count\": 12,\n  \"configs\": [\n    \"saos_arc_forcing_block_causal.json\",\n    \"saos_arc_forcing_encdec.json\",\n    \"saos_base.json\",\n    \"saos_block_causal.json\",\n    \"saos_encdec.json\",\n    \"saos_streamgen_block_causal.json\",\n    \"saos_streamgen_encdec.json\",\n    \"saos_streamgen_sf_block_causal.json\",\n    \"saos_streamgen_sf_encdec.json\",\n    \"stable_audio_1_0.json\",\n    \"stable_audio_2_0.json\",\n    \"streamgen_base.json\"\n  ]\n}\n"
+    },
+    {
+      "cmd": "python - <<'PY'\nfrom pathlib import Path\ntext = Path('stable_audio_tools/inference/generation.py').read_text()\nneedles = ['generate_diffusion_cond_blockar', 'use_kv_cache', 'context_router_attention_pattern']\nprint({n: (n in text) for n in needles})\nassert 'generate_diffusion_cond_blockar' in text\nPY",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "exit_code": 0,
+      "seconds": 0.046,
+      "output_tail": "{'generate_diffusion_cond_blockar': True, 'use_kv_cache': True, 'context_router_attention_pattern': True}\n"
+    }
+  ]
+}
