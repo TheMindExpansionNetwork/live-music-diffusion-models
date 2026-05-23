@@ -1,0 +1,100 @@
+{
+  "app": "lmdm-sao-full-generation",
+  "checked_at_utc": "2026-05-23T14:16:13.003855+00:00",
+  "fork_url": "https://github.com/TheMindExpansionNetwork/live-music-diffusion-models.git",
+  "model_id": "stabilityai/stable-audio-open-1.0",
+  "ok": true,
+  "receipt": {
+    "checked_at_utc": "2026-05-23T14:16:11Z",
+    "cuda_mem_allocated_gb": 4.524,
+    "diffusion_objective": "v",
+    "gpu": "NVIDIA A100-SXM4-40GB",
+    "model_id": "stabilityai/stable-audio-open-1.0",
+    "model_sample_size": 2097152,
+    "ok": true,
+    "outputs": [
+      {
+        "bytes": 1409102,
+        "channels": 2,
+        "frames": 352256,
+        "mono_first10": [
+          0.158432,
+          0.296646,
+          0.227158,
+          0.383194,
+          0.224197,
+          0.393814,
+          0.177078,
+          0.325333,
+          0.173355,
+          0.222321
+        ],
+        "path": "/tmp/lmdm-sao-generation/sao_open_earth_drone_prompt.wav",
+        "peak": 0.999969,
+        "rms": 0.318366,
+        "sample_rate": 44100,
+        "seconds": 7.988,
+        "sha256": "3ddfa7897fa167543a435381e9db9a7a48d4707ea7c081a38ab26e84bf3da155"
+      },
+      {
+        "bytes": 1409102,
+        "channels": 2,
+        "frames": 352256,
+        "mono_first10": [
+          0.014069,
+          0.017166,
+          0.016052,
+          0.020142,
+          0.020569,
+          0.025787,
+          0.027466,
+          0.031662,
+          0.03244,
+          0.034622
+        ],
+        "path": "/tmp/lmdm-sao-generation/sao_open_earth_drone_init_variation.wav",
+        "peak": 0.999969,
+        "rms": 0.159073,
+        "sample_rate": 44100,
+        "seconds": 7.988,
+        "sha256": "349e4707f8dee5fcabf9cbff2a94ddb90b3d7b00997608827a6e5295ad758c7f"
+      }
+    ],
+    "prompt": "deep didgeridoo earth drone, ritual bass resonance, organic throat harmonics, slow evolving dark ambient texture, no drums",
+    "runtime_seconds": 17.823,
+    "sample_rate": 44100,
+    "scope": "Full bounded GPU inference/generation through the fork's stable_audio_tools code. Not training and not LMDM ARC checkpoint generation because public LMDM checkpoints are not shipped upstream.",
+    "seconds_total_requested": 8,
+    "source_sample": {
+      "bytes": 1058478,
+      "channels": 2,
+      "frames": 264600,
+      "mono_first10": [
+        0.021667,
+        0.023621,
+        0.021881,
+        0.023041,
+        0.022461,
+        0.023346,
+        0.023041,
+        0.023956,
+        0.02417,
+        0.024872
+      ],
+      "path": "/root/earth-drone/didgeridoo-earth-drone-v2-sample-44k-stereo.wav",
+      "peak": 0.324402,
+      "rms": 0.071343,
+      "sample_rate": 44100,
+      "seconds": 6.0,
+      "sha256": "52000bab98882c7733930f795fa40facf731f1eb0461daa2f0912d74b9529fa1"
+    },
+    "steps": 8
+  },
+  "step": {
+    "cmd": "python run_sao_generation.py",
+    "returncode": 0,
+    "seconds": 27.983,
+    "stderr_tail": "/usr/local/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.\n  WeightNorm.apply(module, name, dim)\n/tmp/lmdm-sao-generation/run_sao_generation.py:75: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.\n  with torch.inference_mode(), torch.cuda.amp.autocast(dtype=torch.float16):\n\n  0%|          | 0/8 [00:00<?, ?it/s]/usr/local/lib/python3.10/site-packages/torchsde/_brownian/brownian_interval.py:608: UserWarning: Should have tb<=t1 but got tb=500.00006103515625 and t1=500.000061.\n  warnings.warn(f\"Should have {tb_name}<=t1 but got {tb_name}={tb} and t1={self._end}.\")\n\n 12%|\u2588\u258e        | 1/8 [00:00<00:02,  3.07it/s]\n 50%|\u2588\u2588\u2588\u2588\u2588     | 4/8 [00:00<00:00, 10.21it/s]\n 88%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258a | 7/8 [00:00<00:00, 14.81it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 8/8 [00:00<00:00, 12.88it/s]\n/tmp/lmdm-sao-generation/run_sao_generation.py:86: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.\n  with torch.inference_mode(), torch.cuda.amp.autocast(dtype=torch.float16):\n\n  0%|          | 0/8 [00:00<?, ?it/s]\n 38%|\u2588\u2588\u2588\u258a      | 3/8 [00:00<00:00, 24.11it/s]\n 75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 6/8 [00:00<00:00, 24.35it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 8/8 [00:00<00:00, 25.01it/s]\n",
+    "stdout_tail": "No module named 'flash_attn'\nflash_attn not installed, disabling Flash Attention\n424242\n424243\n{\n  \"checked_at_utc\": \"2026-05-23T14:16:11Z\",\n  \"cuda_mem_allocated_gb\": 4.524,\n  \"diffusion_objective\": \"v\",\n  \"gpu\": \"NVIDIA A100-SXM4-40GB\",\n  \"model_id\": \"stabilityai/stable-audio-open-1.0\",\n  \"model_sample_size\": 2097152,\n  \"ok\": true,\n  \"outputs\": [\n    {\n      \"bytes\": 1409102,\n      \"channels\": 2,\n      \"frames\": 352256,\n      \"mono_first10\": [\n        0.158432,\n        0.296646,\n        0.227158,\n        0.383194,\n        0.224197,\n        0.393814,\n        0.177078,\n        0.325333,\n        0.173355,\n        0.222321\n      ],\n      \"path\": \"/tmp/lmdm-sao-generation/sao_open_earth_drone_prompt.wav\",\n      \"peak\": 0.999969,\n      \"rms\": 0.318366,\n      \"sample_rate\": 44100,\n      \"seconds\": 7.988,\n      \"sha256\": \"3ddfa7897fa167543a435381e9db9a7a48d4707ea7c081a38ab26e84bf3da155\"\n    },\n    {\n      \"bytes\": 1409102,\n      \"channels\": 2,\n      \"frames\": 352256,\n      \"mono_first10\": [\n        0.014069,\n        0.017166,\n        0.016052,\n        0.020142,\n        0.020569,\n        0.025787,\n        0.027466,\n        0.031662,\n        0.03244,\n        0.034622\n      ],\n      \"path\": \"/tmp/lmdm-sao-generation/sao_open_earth_drone_init_variation.wav\",\n      \"peak\": 0.999969,\n      \"rms\": 0.159073,\n      \"sample_rate\": 44100,\n      \"seconds\": 7.988,\n      \"sha256\": \"349e4707f8dee5fcabf9cbff2a94ddb90b3d7b00997608827a6e5295ad758c7f\"\n    }\n  ],\n  \"prompt\": \"deep didgeridoo earth drone, ritual bass resonance, organic throat harmonics, slow evolving dark ambient texture, no drums\",\n  \"runtime_seconds\": 17.823,\n  \"sample_rate\": 44100,\n  \"scope\": \"Full bounded GPU inference/generation through the fork's stable_audio_tools code. Not training and not LMDM ARC checkpoint generation because public LMDM checkpoints are not shipped upstream.\",\n  \"seconds_total_requested\": 8,\n  \"source_sample\": {\n    \"bytes\": 1058478,\n    \"channels\": 2,\n    \"frames\": 264600,\n    \"mono_first10\": [\n      0.021667,\n      0.023621,\n      0.021881,\n      0.023041,\n      0.022461,\n      0.023346,\n      0.023041,\n      0.023956,\n      0.02417,\n      0.024872\n    ],\n    \"path\": \"/root/earth-drone/didgeridoo-earth-drone-v2-sample-44k-stereo.wav\",\n    \"peak\": 0.324402,\n    \"rms\": 0.071343,\n    \"sample_rate\": 44100,\n    \"seconds\": 6.0,\n    \"sha256\": \"52000bab98882c7733930f795fa40facf731f1eb0461daa2f0912d74b9529fa1\"\n  },\n  \"steps\": 8\n}\n"
+  }
+}
