@@ -1,0 +1,91 @@
+{
+  "app": "lmdm-earth-drone-smoke",
+  "checked_at_utc": "2026-05-23T13:54:00.144068+00:00",
+  "commit": "ab7434662ae0522fa1c88062414f90ebfe4f5e44",
+  "fork_url": "https://github.com/TheMindExpansionNetwork/live-music-diffusion-models.git",
+  "lane": "CPU source/preprocess smoke with earth-drone sample; no checkpoint generation",
+  "ok": true,
+  "sample_note": "sample baked into Modal image from local operator path; not committed to public fork",
+  "smoke": {
+    "chunk_shape": [
+      2,
+      176400
+    ],
+    "envelope64_first8": [
+      0.078721,
+      0.064434,
+      0.067392,
+      0.080391,
+      0.078329,
+      0.083276,
+      0.071451,
+      0.075145
+    ],
+    "input_channels": 2,
+    "input_frames": 264600,
+    "input_seconds": 6.0,
+    "input_sr": 44100,
+    "padding_ratio": 1.0,
+    "peak": 0.22796630859375,
+    "prepared_shape": [
+      1,
+      2,
+      176400
+    ],
+    "rms": 0.07302537560462952,
+    "sample_bytes": 1058478,
+    "sample_path": "/root/earth-drone/didgeridoo-earth-drone-v2-sample-44k-stereo.wav",
+    "seconds_total": 4
+  },
+  "steps": [
+    {
+      "cmd": "git clone --depth 1 https://github.com/TheMindExpansionNetwork/live-music-diffusion-models.git /tmp/live-music-diffusion-models",
+      "cwd": null,
+      "returncode": 0,
+      "seconds": 0.396,
+      "stderr_tail": "Cloning into '/tmp/live-music-diffusion-models'...\n",
+      "stdout_tail": ""
+    },
+    {
+      "cmd": "git fetch --depth 1 origin ab7434662ae0522fa1c88062414f90ebfe4f5e44",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "returncode": 0,
+      "seconds": 0.232,
+      "stderr_tail": "From https://github.com/TheMindExpansionNetwork/live-music-diffusion-models\n * branch            ab7434662ae0522fa1c88062414f90ebfe4f5e44 -> FETCH_HEAD\n",
+      "stdout_tail": ""
+    },
+    {
+      "cmd": "git checkout ab7434662ae0522fa1c88062414f90ebfe4f5e44",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "returncode": 0,
+      "seconds": 0.021,
+      "stderr_tail": "Note: switching to 'ab7434662ae0522fa1c88062414f90ebfe4f5e44'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nHEAD is now at ab74346 fix readme\n",
+      "stdout_tail": ""
+    },
+    {
+      "cmd": "python -m pip install -e . --no-deps",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "returncode": 0,
+      "seconds": 3.96,
+      "stderr_tail": "\n[notice] A new release of pip is available: 25.1.1 -> 26.1.1\n[notice] To update, run: pip install --upgrade pip\n",
+      "stdout_tail": "Obtaining file:///tmp/live-music-diffusion-models\n  Installing build dependencies: started\n  Installing build dependencies: finished with status 'done'\n  Checking if build backend supports build_editable: started\n  Checking if build backend supports build_editable: finished with status 'done'\n  Getting requirements to build editable: started\n  Getting requirements to build editable: finished with status 'done'\n  Preparing editable metadata (pyproject.toml): started\n  Preparing editable metadata (pyproject.toml): finished with status 'done'\nBuilding wheels for collected packages: stable-audio-tools\n  Building editable for stable-audio-tools (pyproject.toml): started\n  Building editable for stable-audio-tools (pyproject.toml): finished with status 'done'\n  Created wheel for stable-audio-tools: filename=stable_audio_tools-0.0.19-0.editable-py3-none-any.whl size=4147 sha256=19df96e7f5845073ef8e7ef24b2a702538141a07b263d1353f154b5a56210405\n  Stored in directory: /tmp/pip-ephem-wheel-cache-e8sai9z9/wheels/88/d9/ca/8604ca600df80519b233144bdd0b9b959e4ebf7eedcbe04c8b\nSuccessfully built stable-audio-tools\nInstalling collected packages: stable-audio-tools\nSuccessfully installed stable-audio-tools-0.0.19\n"
+    },
+    {
+      "cmd": "python -m compileall -q stable_audio_tools/inference stable_audio_tools/data stable_audio_tools/models",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "returncode": 0,
+      "seconds": 0.159,
+      "stderr_tail": "",
+      "stdout_tail": ""
+    },
+    {
+      "cmd": "python earth_drone_preprocess_smoke.py",
+      "cwd": "/tmp/live-music-diffusion-models",
+      "returncode": 0,
+      "seconds": 7.185,
+      "stderr_tail": "",
+      "stdout_tail": "{\"chunk_shape\": [2, 176400], \"envelope64_first8\": [0.078721, 0.064434, 0.067392, 0.080391, 0.078329, 0.083276, 0.071451, 0.075145], \"input_channels\": 2, \"input_frames\": 264600, \"input_seconds\": 6.0, \"input_sr\": 44100, \"padding_ratio\": 1.0, \"peak\": 0.22796630859375, \"prepared_shape\": [1, 2, 176400], \"rms\": 0.07302537560462952, \"sample_bytes\": 1058478, \"sample_path\": \"/root/earth-drone/didgeridoo-earth-drone-v2-sample-44k-stereo.wav\", \"seconds_total\": 4}\n"
+    }
+  ],
+  "upstream_url": "https://github.com/ZacharyNovack/live-music-diffusion-models.git"
+}
